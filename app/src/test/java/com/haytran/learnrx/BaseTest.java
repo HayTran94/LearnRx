@@ -12,7 +12,26 @@ import io.reactivex.disposables.Disposable;
 public class BaseTest {
 
     @Rule
-    public Timeout globalTimeout = Timeout.seconds(10);
+    public Timeout globalTimeout = Timeout.seconds(20);
+
+    CountDownLatch countDownLatch;
+
+    @Before
+    public void setUp() {
+        countDownLatch = new CountDownLatch(1);
+    }
+
+    public void await() {
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void stop() {
+        countDownLatch.countDown();
+    }
 
     public void waitFor(int seconds) {
         try {
@@ -38,11 +57,13 @@ public class BaseTest {
             @Override
             public void onError(Throwable e) {
                 System.out.println("onError " + e);
+                stop();
             }
 
             @Override
             public void onComplete() {
-                System.out.println("onComplete ");
+                System.out.println("onComplete at thread " + Thread.currentThread().getName());
+                stop();
             }
         };
     }

@@ -38,4 +38,38 @@ public class FlatMapTest extends BaseTest {
                 .subscribe(getObserver());
     }
 
+    @Test
+    public void test2() {
+        Observable<Integer[]> observable = Observable.create((subscriber) -> {
+            subscriber.onNext(ints1);
+            subscriber.onNext(ints2);
+            subscriber.onNext(ints3);
+        });
+        observable
+                .flatMap(new Function<Integer[], ObservableSource<?>>() {
+                    @Override
+                    public ObservableSource<?> apply(Integer[] ints) throws Exception {
+                        return Observable.just("1", "2");
+                    }
+                })
+                .subscribe(getObserver());
+    }
+
+    @Test
+    public void test3() {
+        Observable<Integer[]> observable = Observable.create((subscriber) -> {
+            subscriber.onNext(ints1);
+            subscriber.onNext(ints2);
+            subscriber.onNext(ints3);
+        });
+        observable
+                .flatMap(new Function<Integer[], ObservableSource<?>>() {
+                    @Override
+                    public ObservableSource<?> apply(Integer[] ints) throws Exception {
+                        return Observable.just("1", "2");
+                    }
+                })
+                .subscribe(getObserver());
+    }
+
 }
