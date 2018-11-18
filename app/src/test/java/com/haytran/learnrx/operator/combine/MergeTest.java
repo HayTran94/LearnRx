@@ -63,7 +63,6 @@ public class MergeTest  extends BaseTest{
         Observable observableMerge = Observable.merge(observable1, observable2);
 
         observableMerge
-                .observeOn(Schedulers.newThread())
                 .subscribe(getObserver());
         await();
     }
@@ -93,7 +92,6 @@ public class MergeTest  extends BaseTest{
         Observable observableMerge = Observable.mergeDelayError(observable1, observable2);
 
         observableMerge
-                .observeOn(Schedulers.newThread())
                 .subscribe(getObserver());
         await();
     }
