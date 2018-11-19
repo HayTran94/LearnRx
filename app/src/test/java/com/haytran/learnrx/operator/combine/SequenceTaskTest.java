@@ -25,10 +25,12 @@ public class SequenceTaskTest extends BaseTest{
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.newThread())
                 .subscribe(getCompletableObserver());
+        await();
     }
 
     private Single getSingle() {
         return Single.create((sub) -> {
+            System.out.println("getSingle create " + Thread.currentThread().getName());
             sub.onSuccess("hay");
         });
     }
@@ -43,12 +45,14 @@ public class SequenceTaskTest extends BaseTest{
         return new CompletableObserver() {
             @Override
             public void onSubscribe(Disposable d) {
+                System.out.println("onSubscribe thread " + Thread.currentThread().getName());
                 System.out.println("onSubscribe " + d);
             }
 
             @Override
             public void onComplete() {
-                System.out.println("onComplete ");
+                System.out.println("onComplete thread " + Thread.currentThread().getName());
+                stop();
             }
 
             @Override
