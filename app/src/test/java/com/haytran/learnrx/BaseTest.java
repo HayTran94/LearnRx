@@ -46,26 +46,30 @@ public class BaseTest {
         return new Observer() {
             @Override
             public void onSubscribe(Disposable d) {
-                System.out.println("onSubscribe, Disposable = " + d);
+                System.out.println(getHeaderLog() + "onSubscribe, Disposable = " + d + ", Thread name " + Thread.currentThread().getName());
             }
 
             @Override
             public void onNext(Object o) {
-                System.out.println("onNext = " + o);
+                System.out.println(getHeaderLog() + "onNext = " + o);
             }
 
             @Override
             public void onError(Throwable e) {
-                System.out.println("onError " + e);
+                System.out.println(getHeaderLog() + "onError " + e);
                 stop();
             }
 
             @Override
             public void onComplete() {
-                System.out.println("onComplete at thread " + Thread.currentThread().getName());
+                System.out.println(getHeaderLog() + "onComplete at thread " + Thread.currentThread().getName());
                 stop();
             }
         };
+    }
+
+    public String getHeaderLog() {
+        return "[" + System.currentTimeMillis()/1000 + "]";
     }
 
 }
