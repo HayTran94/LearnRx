@@ -12,7 +12,7 @@ import io.reactivex.disposables.Disposable;
 public class BaseTest {
 
     @Rule
-    public Timeout globalTimeout = Timeout.seconds(20);
+    public Timeout globalTimeout = Timeout.seconds(60);
 
     CountDownLatch countDownLatch;
 
@@ -68,7 +68,7 @@ public class BaseTest {
         };
     }
 
-    public String getHeaderLog() {
+    static public String getHeaderLog() {
         return "[" + System.currentTimeMillis()/1000 + "]";
     }
 

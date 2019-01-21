@@ -1,5 +1,7 @@
 package com.haytran.learnrx.operator.retry;
 
+import android.util.Log;
+
 import com.haytran.learnrx.BaseTest;
 
 import org.junit.Test;
@@ -12,15 +14,22 @@ public class ReTryBaseTest extends BaseTest {
 
     @Test
     public void test1() {
-        Observable.interval(1000, TimeUnit.MILLISECONDS)
-                .map(i -> {
-                    if (i == 2) {
-                        throw new Exception("test");
-                    } else {
-                        return i;
-                    }
-                })
-                .retryWhen(new RetryWithDelay(3, 2000))
+        int maxCount = 3;
+        int interval = 5;
+        Observable.create(source -> {
+            System.out.println(BaseTest.getHeaderLog() + "create");
+            source.onError(new Exception("Exki"));
+        })
+                .retryWhen(errors -> errors
+                        .zipWith(Observable.range(1, maxCount + 1), (n, i) -> i)
+                        .flatMap(retryCount -> {
+                            System.out.println(BaseTest.getHeaderLog() + "flatMap retryCount = " + retryCount);
+                            if (retryCount > maxCount) {
+                                throw new Exception("Timeout");
+                            } else {
+                                return Observable.timer(interval, TimeUnit.SECONDS);
+                            }
+                        }))
                 .subscribe(getObserver());
 
         await();
@@ -45,5 +54,15 @@ public class ReTryBaseTest extends BaseTest {
         Observable.interval(1, TimeUnit.SECONDS).take(5).subscribe(getObserver());
 
         await();
+    }
+
+    @Test
+    public void test4() {
+        Observable.just(1).flatMap(i -> Observable.timer(3, TimeUnit.SECONDS)).subscribe(getObserver());
+        await();
+    }
+
+    @Test
+    public void test5() {
     }
 }

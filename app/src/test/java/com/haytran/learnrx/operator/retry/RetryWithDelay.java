@@ -25,12 +25,11 @@ public class RetryWithDelay implements Function<Observable<? extends Throwable>,
                 .flatMap(new Function<Throwable, Observable<?>>() {
                     @Override
                     public Observable<?> apply(final Throwable throwable) {
-                        if (++retryCount < maxRetries) {
+                        if (retryCount++ < maxRetries) {
                             System.out.println("retryCount = " + retryCount);
                             // When this Observable calls onNext, the original
                             // Observable will be retried (i.e. re-subscribed).
-                            return Observable.timer(retryDelayMillis,
-                                    TimeUnit.MILLISECONDS);
+                            return Observable.timer((long) Math.pow(retryDelayMillis, retryCount), TimeUnit.SECONDS);
                         }
 
                         // Max retries hit. Just pass the error along.
